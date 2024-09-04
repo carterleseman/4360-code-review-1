@@ -3,26 +3,27 @@ from user import User
 from account import Account
 from message import Message
 
-message = Message()
-
 class Auth:
     def __init__(self):
-        pass
+        self.message = Message()
 
-    def login_again(self, username, password):
-        with open('db.json', 'r') as file:
-            users = json.load(file)['users']
-
-        for user in users:
-            if user['name'] == username:
-                if user['password'] == password:
-                    accounts = {}
-                    for account in user['accounts']:
-                        accounts[account['accountNumber']] = Account(account['balance'])
+    def login(self, username, password):
+        try:
+            with open('db.json', 'r') as file:
+                data = json.load(file)
+                users = data.get('users', [])
+                
+            for user in users:
+                if user.get('name') == username and user.get('password') == password:
+                    accounts = {
+                        account['accountNumber']: Account(account['balance'])
+                        for account in user.get('accounts', [])
+                    }
                     return User(user['name'], accounts)
-                else:
-                    message.print("name or password not found")
-            else:
-                message.print("name or password not found")
-            
-        return None
+                
+            self.message.print("name or password not found")
+            return None
+        
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            self.message.print(f"Error loading database: {e}")
+            return None

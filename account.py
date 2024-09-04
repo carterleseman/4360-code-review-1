@@ -8,6 +8,8 @@ class Account:
         return self.balance
 
     def withdraw(self, amount):
+        if amount < 0:
+            raise ValueError("Withdrawal amount cannot be negative")
         if self.balance >= amount:
             self.balance -= amount
             return self.balance
@@ -15,6 +17,7 @@ class Account:
             raise InsufficientFundsException
     
     def deposit(self, amount):
+        if amount < 0:
+            raise ValueError("Deposit amount cannot be negative")
         self.balance += amount
         return self.balance
-

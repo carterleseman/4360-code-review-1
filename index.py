@@ -5,6 +5,8 @@ from user import User
 from account import Account
 from auth import Auth
 
+def clear():
+    os.system('cls')
 
 def main():
     message = Message()
@@ -13,23 +15,25 @@ def main():
     
     #authenticate user
     login_attempts = 0
-    failedAttempt = False
     while login_attempts < 3:
-        os.system('cls')
-        if failedAttempt:
+        clear()
+        if login_attempts > 0:
             message.print("please try again")
         message.print("Welcome to the bank of Py!")
         message.print("please login to continue.")
 
-        userName = input("Username: ")
-        password = input("password")
+        username = input("Username: ")
+        password = input("Password: ")
 
-        user = auth.login(userName, password)
+        user = auth.login(username, password)
         if not user:
             login_attempts += 1
-            failedAttempt = True
         else:
             break
+
+    else:
+        message.print("Failed to authenticate user")
+        return
 
     #register UI
     ui.register_command("deposit", user.deposit, "deposit [accountNumber] [amount] - deposit an amount into an account")
@@ -38,7 +42,7 @@ def main():
 
     #Main Loop
     while True:
-        os.system('cls')
+        clear()
         message.print("What can we do for you today?")
         user.show_accounts()
         ui.show_commands()
@@ -49,13 +53,7 @@ def main():
             print("Good bye")
             break
 
-        
         ui.execute_command(user_inputs[0], user_inputs[1:])
         
-
-
-
 if __name__ == "__main__":
     main()
-   
-
